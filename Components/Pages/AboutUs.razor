@@ -1,64 +1,74 @@
 ﻿@page "/AboutUs"
 
-
 <style>
-    .avenir {
-        font-family: "Avenir", "Avenir Next", "Helvetica Neue", sans-serif;
-        font-weight: 700; 
-        color: #C8102E; /* Red color */
+    /* Partial-page background */
+    .background {
+        position: fixed;
+        top: 0;
+        left: 240px; /* Adjust this value to start the background image to the right of the sidebar */
+        width: calc(100% - 240px); /* Adjust width to leave space for sidebar */
+        height: 100%;
+        background-image: url('/blur-background.ico');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        z-index: -1; /* Place background behind the content */
     }
 
-   
+    .avenir {
+        font-family: "Avenir", "Avenir Next", "Helvetica Neue", sans-serif;
+        font-weight: 700;
+        color: #C8102E; /* Red color */
+    }
 
     .red-rectangle {
         background-color: #C8102E; /* Red background color */
         color: #FFFFFF; /* White text color */
-        padding: 20px; 
-        border-radius: 10px; 
-        margin: 20px auto; 
-        width: 80%; 
-        max-width: 800px; 
-        display: block; 
-        clear: both; 
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px auto;
+        width: 80%;
+        max-width: 800px;
+        display: block;
+        clear: both;
     }
 
     .heading {
         font-weight: bold;
-        font-size: 1.5em; 
-        margin-bottom: 20px;
-        margin-top:20px;
-    }
-
-    .content {
-        font-size: 1.2em; 
-        line-height: 1.6; 
-    }
-
-    .container {
-        display: flex;
-        flex-direction: column; 
-    }
-
-    .center-container {
-        text-align: center; 
-        margin: 20px 0; 
-    }
-
-  
-    .heading {
-        font-size: 2em; 
-        margin: 0; 
-    }
-
-    .heading3 {
-        font-weight: bold;
-        font-size: 1.5em; 
+        font-size: 1.5em;
         margin-bottom: 20px;
         margin-top: 20px;
     }
 
- 
+    .content {
+        font-size: 1.2em;
+        line-height: 1.6;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .center-container {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .heading {
+        font-size: 2em;
+        margin: 0;
+    }
+
+    .heading3 {
+        font-weight: bold;
+        font-size: 1.5em;
+        margin-bottom: 20px;
+        margin-top: 20px;
+    }
 </style>
+
+<div class="background"></div> <!-- Partial-page background image -->
 
 <div class="container">
     <div class="center-container">
@@ -79,13 +89,12 @@
 
         <h3 class="heading3">Our Mission</h3>
         <p class="content">
-            Empowering young people for life, leadership and service.
+            Empowering young people for life, leadership, and service.
         </p>
         <h3 class="heading3">Our Vision</h3>
         <p class="content">
             Young people and communities are empowered to build a just, sustainable, equitable, and inclusive world.
         </p>
-        
     </div>
 
     <div class="red-rectangle">

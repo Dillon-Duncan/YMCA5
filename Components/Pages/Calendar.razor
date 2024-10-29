@@ -1,5 +1,30 @@
 ﻿@page "/calendar"
 
+<style>
+    /* Partial-page background */
+    .background {
+        position: fixed;
+        top: 0;
+        left: 240px; /* Adjust this value to start the background image to the right of the sidebar */
+        width: calc(100% - 200px); /* Reduce width to account for sidebar width */
+        height: 100%;
+        background-image: url('/blur-background.ico');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        z-index: -1; /* Place background behind the content */
+    }
+
+    /* Content area styling */
+    .content {
+        position: relative;
+        z-index: 1; /* Ensure content is on top of the background */
+    }
+</style>
+
+<!-- Background Image Div -->
+<div class="background"></div>
+
 <div class="content px-4 d-flex flex-column justify-content-center align-items-center" style="height: 100vh; margin-bottom: 25px;">
 
     <div class="text-center mb-4">
@@ -7,9 +32,9 @@
     </div>
 
     <div class="d-flex justify-content-center align-items-center mb-3">
-        <button class="btn btn-outline-primary me-2" @onclick="PreviousMonth">Previous</button>
+        <button class="btn btn-outline-primary me-2" style="background-color: #EC1F26; border-color: #EC1F26;" @onclick="PreviousMonth">Previous</button>
         <h4 class="mb-0">@currentMonth.ToString("MMMM yyyy")</h4>
-        <button class="btn btn-outline-primary ms-2" @onclick="NextMonth">Next</button>
+        <button class="btn btn-outline-primary ms-2" style="background-color: #EC1F26; border-color: #EC1F26;" @onclick="NextMonth">Next</button>
     </div>
 
 <div class="d-flex justify-content-center mb-4">
@@ -57,7 +82,7 @@
             <label for="eventTitle">Event Title</label>
             <input type="text" id="eventTitle" @bind="newEventTitle" class="form-control" placeholder="Event Title" />
         </div>
-        <button class="btn btn-primary mt-2" @onclick="AddEvent">Add Event</button>
+        <button class="btn btn-primary mt-2" style="background-color: #EC1F26; border-color: #EC1F26;" @onclick="AddEvent">Add Event</button>
     </div>
 </div>
 </div>

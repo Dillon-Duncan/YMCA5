@@ -4,7 +4,7 @@
     <title>Document</title>
     <style>
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 15px;
         }
 
         ::-webkit-scrollbar-track {
@@ -22,11 +22,13 @@
     </style>
 </head>
 
-<div class="top-row ps-3 navbar navbar-dark" style="background-color : white; font-size: 100%;">
+<div class="top-row ps-3 navbar navbar-dark" style="background-color: #616161; font-size: 100%;">
     <div class="container-fluid">
-        <div class="top-row ps-3 navbar navbar-dark" style="background-color : white; margin-bottom: 20px;">
+        <div class="top-row ps-3 navbar navbar-dark" style="background-color: #616161; margin-bottom: 20px;">
             <div class="container-fluid">
-                <a class="navbar-brand" style="color: black;" href="dashboard"><h2>YMCA</h2></a>
+                <a class="navbar-brand" style="color: white;" href="dashboard">
+                    <img src="/YMCA_LOGO.ico" alt="YMCA Logo" style="height: 60px;"> 
+                </a>
             </div>
         </div>
     </div>
@@ -34,25 +36,21 @@
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()" style="background-color : white; color: black;">
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()" style="background-color: #616161; color: white;">
     <nav class="flex-column">
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="admin" style="color: black;">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true" style="color: black;"></span> Admin
+            <NavLink class="nav-link" href="admin" style="color: white;">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true" style="color: white;"></span> Admin
             </NavLink>
-
-            <NavLink class="nav-link" href="dashboard" style="color: black;">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true" style="color: black;"></span> Dashboard
+            <NavLink class="nav-link" href="dashboard" style="color: white;">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true" style="color: white;"></span> Dashboard
             </NavLink>
-
-            <NavLink class="nav-link" href="settings" style="color: black;">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true" style="color: black;"></span> Settings
+            <NavLink class="nav-link" href="settings" style="color: white;">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true" style="color: white;"></span> Settings
             </NavLink>
-
-            <NavLink class="nav-link" href="useraccount" style="color: black;">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true" style="color: black;"></span> Account Management
+            <NavLink class="nav-link" href="useraccount" style="color: white;">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true" style="color: white;"></span> Account Management
             </NavLink>
-
         </div>
     </nav>
 </div>

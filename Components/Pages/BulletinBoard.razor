@@ -3,6 +3,31 @@
 @using System.Linq
 @inject NavigationManager NavigationManager
 
+<style>
+    /* Partial-page background */
+    .background {
+        position: fixed;
+        top: 0;
+        left: 240px; /* Adjust this value to start the background image to the right of the sidebar */
+        width: calc(100% - 200px); /* Reduce width to account for sidebar width */
+        height: 100%;
+        background-image: url('/blur-background.ico');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        z-index: -1; /* Place background behind the content */
+    }
+
+    /* Content area styling */
+    .content {
+        position: relative;
+        z-index: 1; /* Ensure content is on top of the background */
+    }
+</style>
+
+<!-- Background Image Div -->
+<div class="background"></div>
+
 <div class="content px-4 d-flex flex-column justify-content-center align-items-center" style="height: 100vh; margin-bottom: 25px;">
     <div class="text-center mb-4">
         <h2>Bulletin Board</h2>
@@ -34,7 +59,7 @@
             <textarea @bind="newMessage" class="form-control" rows="3" placeholder="Write your message here..."></textarea>
         </div>
     </div>
-    <button class="btn btn-primary mt-2" @onclick="PostMessage">Post Message</button>
+    <button class="btn btn-primary mt-2" style="background-color: #EC1F26; border-color: #EC1F26;" @onclick="PostMessage">Post Message</button>
 </div>
 
 @code {
