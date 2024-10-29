@@ -5,6 +5,10 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YMCA3", "YMCA3.csproj", "{92AB70D5-0072-46DC-8F07-5DF72A8FFC8F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YmcaApiClient", "..\..\..\Desktop\YMCA_Final\YmcaApiClient\YmcaApiClient.csproj", "{043AE925-219B-4579-A9D0-D7B55B855117}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YmcaApi", "..\..\..\Desktop\YMCA_Final\YmcaApi\YmcaApi.csproj", "{C802CC73-3389-48CD-B175-2FCCEBB6C65F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +21,14 @@ Global
 		{92AB70D5-0072-46DC-8F07-5DF72A8FFC8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92AB70D5-0072-46DC-8F07-5DF72A8FFC8F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{92AB70D5-0072-46DC-8F07-5DF72A8FFC8F}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{043AE925-219B-4579-A9D0-D7B55B855117}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{043AE925-219B-4579-A9D0-D7B55B855117}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{043AE925-219B-4579-A9D0-D7B55B855117}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{043AE925-219B-4579-A9D0-D7B55B855117}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C802CC73-3389-48CD-B175-2FCCEBB6C65F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C802CC73-3389-48CD-B175-2FCCEBB6C65F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C802CC73-3389-48CD-B175-2FCCEBB6C65F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C802CC73-3389-48CD-B175-2FCCEBB6C65F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
