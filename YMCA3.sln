@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YMCA3", "YMCA3.csproj", "{9
 		{B9469868-EAE2-405F-A191-9EAAC61BFF9F} = {B9469868-EAE2-405F-A191-9EAAC61BFF9F}
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "YMCA", "YMCA", "{4DF8CA08-2BA6-4087-BAA9-8DFBC510738F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YmcaApi", "..\..\..\Desktop\YMCA_Final\YmcaApi\YmcaApi.csproj", "{49076DCE-6011-4CF6-A7F1-855895F0D5F2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YmcaApiClient", "..\..\..\Desktop\YMCA_Final\YmcaApiClient\YmcaApiClient.csproj", "{B9469868-EAE2-405F-A191-9EAAC61BFF9F}"
@@ -38,9 +36,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{92AB70D5-0072-46DC-8F07-5DF72A8FFC8F} = {4DF8CA08-2BA6-4087-BAA9-8DFBC510738F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4DAB1FAE-DF8F-4B1E-A282-7DBFFCBD75F9}

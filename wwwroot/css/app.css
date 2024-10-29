@@ -47,10 +47,9 @@ h1:focus {
     }
 
 .container {
-    max-height: 100vh; 
-    overflow-y: auto; 
+    max-height: 100vh;
+    overflow-y: auto;
 }
-
 
 #blazor-error-ui {
     background: lightyellow;
@@ -124,26 +123,26 @@ h1:focus {
 }
 
 .btn {
-    background-color: black; 
-    color: white; 
-    border: none; 
+    background-color: black;
+    color: white;
+    border: none;
 }
 
     .btn:hover,
     .btn:focus {
-        background-color: #333; 
+        background-color: #333;
         color: white;
     }
 
 .btn-primary {
-    background-color: black; 
+    background-color: black;
     color: white;
     border: none;
 }
 
     .btn-primary:hover,
     .btn-primary:focus {
-        background-color: #333; 
+        background-color: #333;
         color: white;
     }
 
@@ -155,19 +154,18 @@ h1:focus {
 
     .btn-secondary:hover,
     .btn-secondary:focus {
-        background-color: #333; 
+        background-color: #333;
         color: white;
     }
 
-
 .btn-outline {
     color: black;
-    border: 1px solid black; 
+    border: 1px solid black;
 }
 
     .btn-outline:hover,
     .btn-outline:focus {
-        background-color: black; 
-        color: white; 
-        border-color: black; 
+        background-color: black;
+        color: white;
+        border-color: black;
     }
