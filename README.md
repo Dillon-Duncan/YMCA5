@@ -1,1 +1,1 @@
-# YMCA3 is dead. ABORT this repo.
+# YMCA3 is dead.
