@@ -1,6 +1,10 @@
 ﻿@page "/login"
-
+@using YMCA3.Models
+@using YmcaApiClient
+@using Microsoft.Extensions.Logging
 @inject NavigationManager NavigationManager
+@inject YmcaApiClientService ApiClientService
+@inject ILogger<Login> Logger
 
 <style>
     /* Partial-page background */
@@ -26,6 +30,7 @@
 
 <!-- Background Image Div -->
 <div class="background"></div>
+
 <div class="content px-4 d-flex flex-column justify-content-center align-items-center" style="height: 100vh; margin-bottom: 25px;">
 
     <div class="text-center mb-4">
@@ -33,13 +38,18 @@
     </div>
 
     <div class="w-100" style="max-width: 400px;">
-        <form>
+        <EditForm Model="this" OnValidSubmit="LoginUser">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
             <div class="mb-4">
-                <input type="text" id="userEmail" class="form-control form-control-lg shadow" placeholder="Email" />
+                <InputText id="userEmail" class="form-control form-control-lg shadow" placeholder="Email" @bind-Value="_email" />
+                <ValidationMessage For="@(() => _email)" />
             </div>
 
             <div class="mb-4">
-                <input type="password" id="userPassword" class="form-control form-control-lg shadow" placeholder="Password" />
+                <InputText id="userPassword" type="password" class="form-control form-control-lg shadow" placeholder="Password" @bind-Value="_password" />
+                <ValidationMessage For="@(() => _password)" />
             </div>
 
             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -51,24 +61,53 @@
             </div>
 
             <div class="text-center mb-4">
-                <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block btn-lg shadow" style="background-color: #EC1F26; border-color: #EC1F26;" @onclick="NavigateToDashboard">Sign in</button>
+                <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block btn-lg shadow" style="background-color: #EC1F26; border-color: #EC1F26;">Sign in</button>
             </div>
 
             <div class="text-center">
-                <p>Not a member? <a href="#" @onclick="NavigateToRegister">Register</a></p>
+                <p>Not a member? <a href="/register">Register</a></p>
             </div>
-        </form>
+        </EditForm>
+        @if (!string.IsNullOrEmpty(_errorMessage))
+        {
+            <div class="alert alert-danger mt-3">@_errorMessage</div>
+        }
     </div>
 </div>
 
 @code {
-    private void NavigateToDashboard()
-    {
-        NavigationManager.NavigateTo("/dashboard");
-    }
+    private string? _email;
+    private string? _password;
+    private string? _errorMessage;
 
-    private void NavigateToRegister()
+    private async Task LoginUser()
     {
-        NavigationManager.NavigateTo("/register");
+        try
+        {
+            var users = await ApiClientService.GetUsers();
+            var admins = await ApiClientService.GetAdmins();
+
+            var user = users?.FirstOrDefault(u => u.EmailAddress == _email && u.Password == _password);
+            var admin = admins?.FirstOrDefault(a => a.EmailAddress == _email && a.Password == _password);
+
+            if (user != null)
+            {
+                NavigationManager.NavigateTo("/dashboard");
+            }
+            else if (admin != null)
+            {
+                NavigationManager.NavigateTo("/admin");
+            }
+            else
+            {
+                _errorMessage = "Invalid login credentials.";
+                Logger.LogWarning("Invalid login attempt for email: {Email}", _email);
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"An error occurred: {ex.Message}";
+            Logger.LogError(ex, "An error occurred during login");
+        }
     }
 }

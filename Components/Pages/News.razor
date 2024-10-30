@@ -1,5 +1,8 @@
 ﻿@page "/news"
-@using YMCA3
+@using YmcaApiClient
+@using Microsoft.Extensions.Logging
+@inject YmcaApiClientService ApiClientService
+@inject ILogger<News> Logger
 
 <style>
     /* Partial-page background */
@@ -27,53 +30,62 @@
 <div class="background"></div>
 
 <div class="content px-4 d-flex flex-column justify-content-center align-items-center" style="height: 100vh; margin-bottom: 25px;">
-
+    <div class="text-center mb-4">
+        <h2>News</h2>
+    </div>
     <div class="container my-4">
-        <h2 class="text-center mb-4">News Feed</h2>
-
         <div class="list-group">
-            @foreach (var item in newsItems)
+            @if (newsItems != null && newsItems.Any())
             {
-                <div class="list-group-item">
-                    <div class="d-flex align-items-center">
-                        <img src="@item.Image" alt="@item.Headline" class="news-image me-3" />
-                        <div class="news-content">
-                            <h5 class="mb-1">@item.Headline</h5>
-                            <p class="mb-1">@item.Description</p>
-                            <small class="text-muted">@item.Date.ToString("MMMM d, yyyy")</small>
+                @foreach (var item in newsItems)
+                {
+                    <div class="list-group-item">
+                        <div class="d-flex align-items-center">
+                            <img src="@item.Image" alt="@item.Headline" class="news-image me-3" />
+                            <div class="news-content">
+                                <h5 class="mb-1">@item.Headline</h5>
+                                <p class="mb-1">@item.Description</p>
+                                <small class="text-muted">@item.Date.ToString("MMMM d, yyyy")</small>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
+            }
+            else
+            {
+                <p>No news items available.</p>
             }
         </div>
+        @if (!string.IsNullOrEmpty(_errorMessage))
+        {
+            <div class="alert alert-danger mt-3">@_errorMessage</div>
+        }
     </div>
 </div>
 
 @code {
-    private List<NewsFeedItem> newsItems;
+    private List<YmcaApiClient.News> newsItems = new();
+    private string _errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
-        // Initialize the list of news items
-        newsItems = new List<NewsFeedItem>
+        await LoadNews();
+    }
+
+    private async Task LoadNews()
+    {
+        try
         {
-            new NewsFeedItem(
-                "https://th.bing.com/th/id/OIP.3Px_8K7l9eiSRBKje5cBMAHaD4?w=285&h=180&c=7&r=0&o=5&dpr=1.5&pid=1.7",
-                "Join Our Community Cleanup Day!",
-                "Help us keep our neighborhoods beautiful. Join us this Saturday for a community cleanup day. Together, we can make a difference!",
-                DateTime.Now.AddDays(-1)
-            ),
-            new NewsFeedItem(
-                "https://th.bing.com/th/id/OIP.NLYwYc_rUu8KNcqNbOIQfQHaHP?w=179&h=180&c=7&r=0&o=5&dpr=1.5&pid=1.7",
-                "Fundraising Gala for Local Charities",
-                "Attend our annual fundraising gala to support local charities. Enjoy an evening of dining and entertainment while making a positive impact in our community.",
-                DateTime.Now.AddDays(-5)
-            ),
-            new NewsFeedItem(
-                "https://th.bing.com/th/id/OIP.2nxBmkQpi6tGiG9Pgt7GLwHaE8?w=244&h=180&c=7&r=0&o=5&dpr=1.5&pid=1.7",
-                "Volunteer Training Session",
-                "Become a volunteer and gain valuable skills while contributing to meaningful causes. Join our training session next week to get started on your journey of giving back.",
-                DateTime.Now.AddDays(-10))
-            };
+            var result = await ApiClientService.GetNews();
+            if (result != null)
+            {
+                newsItems = result;
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "An error occurred while loading news items");
+            _errorMessage = "An error occurred while loading news items.";
+        }
     }
 }

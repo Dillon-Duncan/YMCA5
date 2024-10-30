@@ -1,4 +1,5 @@
 ﻿@page "/useraccount"
+@using YmcaApiClient
 
 <style>
     /* Partial-page background */
@@ -69,3 +70,8 @@
         </form>
     </div>
 </div>
+
+@code {
+    private readonly YmcaApiClientService _apiClient;
+    private YmcaApiClient.User _user;
+}

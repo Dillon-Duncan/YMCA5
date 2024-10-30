@@ -1,4 +1,8 @@
 ﻿@page "/admin"
+@using YmcaApiClient
+@inject YmcaApiClientService ApiClientService
+@using Microsoft.Extensions.Logging
+@inject ILogger<Admin> Logger
 
 <style>
     /* Partial-page background */
@@ -64,18 +68,72 @@
     private string newNewsDescription;
     private string newNewsImageUrl;
 
-    private void PostBulletinMessage()
+    private async Task PostBulletinMessage()
     {
-        // Logic to post the message to the bulletin board
+        if (!string.IsNullOrWhiteSpace(newBulletinMessage))
+        {
+            try
+            {
+                var bulletin = new Bulletin
+                {
+                    Message = newBulletinMessage,
+                    Date = DateTime.Now
+                };
+                await ApiClientService.AddBulletin(bulletin);
+                newBulletinMessage = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "An error occurred while posting a bulletin message");
+            }
+        }
     }
 
-    private void AddCalendarEvent()
+    private async Task AddCalendarEvent()
     {
-        // Logic to add an event to the calendar
+        if (!string.IsNullOrWhiteSpace(newEventTitle) && newEventDate != default)
+        {
+            try
+            {
+                var @event = new Event
+                {
+                    Title = newEventTitle,
+                    Date = newEventDate,
+                    Description = "Event description" // Add a description if needed
+                };
+                await ApiClientService.AddEvent(@event);
+                newEventTitle = string.Empty;
+                newEventDate = DateTime.Today;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "An error occurred while adding a calendar event");
+            }
+        }
     }
 
-    private void AddNewsItem()
+    private async Task AddNewsItem()
     {
-        // Logic to add a news item
+        if (!string.IsNullOrWhiteSpace(newNewsTitle) && !string.IsNullOrWhiteSpace(newNewsDescription) && !string.IsNullOrWhiteSpace(newNewsImageUrl))
+        {
+            try
+            {
+                var news = new YmcaApiClient.News
+                {
+                    Headline = newNewsTitle,
+                    Description = newNewsDescription,
+                    Image = newNewsImageUrl,
+                    Date = DateTime.Now
+                };
+                await ApiClientService.AddNews(news);
+                newNewsTitle = string.Empty;
+                newNewsDescription = string.Empty;
+                newNewsImageUrl = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "An error occurred while adding a news item");
+            }
+        }
     }
 }

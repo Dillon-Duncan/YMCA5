@@ -1,5 +1,8 @@
-﻿@page "/chatting"
-
+﻿@page "/chatting/{chatId:int}"
+@using YmcaApiClient
+@inject YmcaApiClientService ApiClientService
+@using Microsoft.Extensions.Logging
+@inject ILogger<Chatting> Logger
 @inject NavigationManager NavigationManager
 
 <style>
@@ -25,67 +28,83 @@
 </style>
 
 <!-- Background Image Div -->
-
 <div class="background"></div>
-<div class="chat-container d-flex flex-column justify-content-between p-3" style="height: 100vh;">
-    <div class="chat-header text-center mb-3">
-        <h3>Chatting</h3>
-    </div>
 
+<div class="content px-4 d-flex flex-column justify-content-center align-items-center" style="height: 100vh; margin-bottom: 25px;">
+    <div class="text-center mb-4">
+        <h2>Chatting</h2>
+    </div>
     <div class="chat-content border p-3 rounded mb-3" style="flex-grow: 1; overflow-y: auto;">
         @foreach (var chatMessage in chatMessages)
         {
             <div class="d-flex mb-2">
-                @if (chatMessage.IsReceived)
-                {
-                    <div class="received-message p-2 rounded bg-light" style="max-width: 70%;">
-                        <p class="mb-1">@chatMessage.Text</p>
-                        <small class="text-muted">@chatMessage.Timestamp.ToString("HH:mm")</small>
-                    </div>
-                }
-                else
                 {
                     <div class="ms-auto sent-message p-2 rounded bg-primary text-white" style="max-width: 70%;">
                         <p class="mb-1">@chatMessage.Text</p>
-                        <small class="text-light">@chatMessage.Timestamp.ToString("HH:mm")</small>
+                        <small class="text-light">@chatMessage..ToString("HH:mm")</small>
                     </div>
                 }
             </div>
         }
     </div>
-
     <div class="chat-input d-flex">
         <input @bind="newMessage" @bind:event="oninput" type="text" class="form-control me-2" placeholder="Type a message..." />
         <button class="btn btn-primary" style="background-color: #EC1F26; border-color: #EC1F26;" @onclick="SendMessage">Send</button>
     </div>
+    @if (!string.IsNullOrEmpty(_errorMessage))
+    {
+        <div class="alert alert-danger mt-3">@_errorMessage</div>
+    }
 </div>
 
 @code {
+    [Parameter]
+    public int ChatId { get; set; }
+
     private string newMessage = string.Empty;
-    private List<ChatMessage> chatMessages = new List<ChatMessage>();
+    private List<YmcaApiClient.Message> chatMessages = new();
+    private string _errorMessage;
 
-    private void SendMessage()
+    protected override async Task OnInitializedAsync()
     {
-        if (!string.IsNullOrWhiteSpace(newMessage))
+        await LoadChatMessages();
+    }
+
+    private async Task LoadChatMessages()
+    {
+        try
         {
-            var isReceived = chatMessages.Count % 2 != 0;
-            chatMessages.Add(new ChatMessage
-                {
-                    Text = newMessage,
-                    IsReceived = isReceived,
-                    Timestamp = DateTime.Now
-                });
-
-            newMessage = string.Empty;
-
-            InvokeAsync(StateHasChanged);
+            var chat = await ApiClientService.GetChatById(ChatId);
+            if (chat != null)
+            {
+            //    chatMessages = chat.Messages;
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "An error occurred while loading chat messages");
+            _errorMessage = "An error occurred while loading chat messages.";
         }
     }
 
-    private class ChatMessage
+    private async Task SendMessage()
     {
-        public string Text { get; set; }
-        public bool IsReceived { get; set; }
-        public DateTime Timestamp { get; set; }
+        if (!string.IsNullOrWhiteSpace(newMessage))
+        {
+            var newChatMessage = new YmcaApiClient.Message
+			{
+				Text = newMessage
+			};
+
+            try
+            {
+                newMessage = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "An error occurred while sending the message");
+                _errorMessage = "An error occurred while sending the message.";
+            }
+        }
     }
 }

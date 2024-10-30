@@ -71,7 +71,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Desktop\YMCA_Final\YmcaApiClient\YmcaApiClient.csproj" />
+      <ProjectReference Include="C:\Users\mrdun\source\repos\LargerYMCA\YmcaApiClient\YmcaApiClient.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,4 +1,8 @@
 ﻿@page "/calendar"
+@using YmcaApiClient
+@inject YmcaApiClientService ApiClientService
+@using Microsoft.Extensions.Logging
+@inject ILogger<Calendar> Logger
 
 <style>
     /* Partial-page background */
@@ -37,61 +41,88 @@
         <button class="btn btn-outline-primary ms-2" style="background-color: #EC1F26; border-color: #EC1F26;" @onclick="NextMonth">Next</button>
     </div>
 
-<div class="d-flex justify-content-center mb-4">
-    <div class="table-responsive me-4" style="max-width: 80%;">
-        <table class="table table-bordered text-center">
-            <thead>
-                <tr>
-                    @foreach (var day in Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>())
-                    {
-                        <th>@day</th>
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var week in GetWeeksInMonth())
-                {
+    <div class="d-flex justify-content-center mb-4">
+        <div class="table-responsive me-4" style="max-width: 80%;">
+            <table class="table table-bordered text-center">
+                <thead>
                     <tr>
-                        @foreach (var day in week)
+                        @foreach (var day in Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>())
                         {
-                            <td class="align-middle">
-                                @if (day != null)
-                                {
-                                    <div class="day-number">@day.Value.Day</div>
-                                    <ul class="list-unstyled">
-                                        @foreach (var eventItem in GetEventsForDay(day.Value))
-                                        {
-                                            <li class="text-small text-primary">@eventItem.Title</li>
-                                        }
-                                    </ul>
-                                }
-                            </td>
+                            <th>@day</th>
                         }
-                </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-    <div style="max-width: 40%;">
-        <h5>Add Event</h5>
-        <div class="form-group">
-            <label for="eventDate">Event Date</label>
-            <input type="date" id="eventDate" @bind="newEventDate" class="form-control" />
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var week in GetWeeksInMonth())
+                    {
+                        <tr>
+                            @foreach (var day in week)
+                            {
+                                <td class="align-middle">
+                                    @if (day != null)
+                                    {
+                                        <div class="day-number">@day.Value.Day</div>
+                                        <ul class="list-unstyled">
+                                            @foreach (var eventItem in GetEventsForDay(day.Value))
+                                            {
+                                                <li class="text-small text-primary">@eventItem.Title</li>
+                                            }
+                                        </ul>
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
-        <div class="form-group">
-            <label for="eventTitle">Event Title</label>
-            <input type="text" id="eventTitle" @bind="newEventTitle" class="form-control" placeholder="Event Title" />
+        <div style="max-width: 40%;">
+            <h5>Add Event</h5>
+            <div class="form-group">
+                <label for="eventDate">Event Date</label>
+                <input type="date" id="eventDate" @bind="newEventDate" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="eventTitle">Event Title</label>
+                <input type="text" id="eventTitle" @bind="newEventTitle" class="form-control" placeholder="Event Title" />
+            </div>
+            <button class="btn btn-primary mt-2" style="background-color: #EC1F26; border-color: #EC1F26;" @onclick="AddEvent">Add Event</button>
+            @if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <div class="alert alert-danger mt-3">@_errorMessage</div>
+            }
         </div>
-        <button class="btn btn-primary mt-2" style="background-color: #EC1F26; border-color: #EC1F26;" @onclick="AddEvent">Add Event</button>
     </div>
-</div>
 </div>
 
 @code {
     private DateTime currentMonth = DateTime.Now;
     private DateTime newEventDate;
     private string newEventTitle;
-    private List<EventItem> events = new();
+    private List<Event> events = new();
+    private string _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadEvents();
+    }
+
+    private async Task LoadEvents()
+    {
+        try
+        {
+            var result = await ApiClientService.GetEvents();
+            if (result != null)
+            {
+                events = result;
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "An error occurred while loading events");
+            _errorMessage = "An error occurred while loading events.";
+        }
+    }
 
     private void PreviousMonth()
     {
@@ -135,29 +166,33 @@
         return weeks;
     }
 
-    private IEnumerable<EventItem> GetEventsForDay(DateTime day)
+    private IEnumerable<Event> GetEventsForDay(DateTime day)
     {
         return events.Where(e => e.Date.Date == day.Date);
     }
 
-    private void AddEvent()
+    private async Task AddEvent()
     {
         if (!string.IsNullOrWhiteSpace(newEventTitle) && newEventDate != default)
         {
-            events.Add(new EventItem
+            var newEvent = new Event
             {
                 Date = newEventDate,
                 Title = newEventTitle
-            });
+            };
 
-            newEventDate = default;
-            newEventTitle = string.Empty;
+            try
+            {
+                await ApiClientService.AddEvent(newEvent);
+                events.Add(newEvent);
+                newEventDate = default;
+                newEventTitle = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "An error occurred while adding the event");
+                _errorMessage = "An error occurred while adding the event.";
+            }
         }
-    }
-
-    private class EventItem
-    {
-        public DateTime Date { get; set; }
-        public string Title { get; set; }
     }
 }

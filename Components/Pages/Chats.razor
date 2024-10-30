@@ -1,5 +1,8 @@
 ﻿@page "/chats"
-@inject NavigationManager NavigationManager
+@using YmcaApiClient
+@inject YmcaApiClientService ApiClientService
+@using Microsoft.Extensions.Logging
+@inject ILogger<Chats> Logger
 
 <style>
     /* Partial-page background */
@@ -26,49 +29,52 @@
 <!-- Background Image Div -->
 <div class="background"></div>
 
-<div class="chat-container d-flex flex-column justify-content-between p-3" style="height: 100vh;">
-
+<div class="content px-4 d-flex flex-column justify-content-center align-items-center" style="height: 100vh; margin-bottom: 25px;">
     <div class="text-center mb-4">
         <h2>Chats</h2>
     </div>
-
-<div class="container mt-4">
-
-    <div class="list-group">
-        @foreach (var chat in userChats)
-        {
-            <a href="#" class="list-group-item list-group-item-action" @onclick="() => NavigateToChat()">
-                <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">@chat.UserName</h5>
-                    <small>@chat.LastMessageTime.ToString("MMM d, yyyy HH:mm")</small>
-                </div>
-                <p class="mb-1 text-muted">@chat.LastMessagePreview</p>
-            </a>
-        }
+    <div class="w-100" style="max-width: 400px;">
+        <ul class="list-group">
+            @foreach (var chat in userChats)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center" @onclick="() => NavigateToChat(chat.Id)">
+                    <div>
+                        <h5 class="mb-1">@chat.User2</h5>
+                    </div>
+                </li>
+            }
+        </ul>
     </div>
-</div>
 </div>
 
 @code {
-    private List<UserChat> userChats = new List<UserChat>
-    {
-        new UserChat { Id = 1, UserName = "John Doe", LastMessagePreview = "Hey, how are you?", LastMessageTime = DateTime.Now.AddMinutes(-15) },
-        new UserChat { Id = 2, UserName = "Jane Smith", LastMessagePreview = "Looking forward to our meeting tomorrow.", LastMessageTime = DateTime.Now.AddHours(-2) },
-        new UserChat { Id = 3, UserName = "Mike Johnson", LastMessagePreview = "Can you send me the files?", LastMessageTime = DateTime.Now.AddDays(-1) },
-        new UserChat { Id = 4, UserName = "Emily Davis", LastMessagePreview = "Thank you!", LastMessageTime = DateTime.Now.AddDays(-3) }
-    };
+    private List<YmcaApiClient.Chat> userChats = new();
+    private string _errorMessage;
 
-    private void NavigateToChat()
+    protected override async Task OnInitializedAsync()
     {
-        NavigationManager.NavigateTo("/chatting");
+        await LoadChats();
     }
 
-    private class UserChat
+    private async Task LoadChats()
     {
-        public int Id { get; set; }
-        public string UserName { get; set; }
-        public string LastMessagePreview { get; set; }
-        public DateTime LastMessageTime { get; set; }
+        try
+        {
+            var result = await ApiClientService.GetChats();
+            if (result != null)
+            {
+                userChats = result;
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "An error occurred while loading chats");
+            _errorMessage = "An error occurred while loading chats.";
+        }
+    }
+
+    private void NavigateToChat(int chatId)
+    {
+       // NavigationManager.NavigateTo($"/chatting/{chatId}");
     }
 }
-

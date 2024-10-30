@@ -1,7 +1,8 @@
 ﻿@page "/bulletinboard"
-@using System.Collections.Generic
-@using System.Linq
-@inject NavigationManager NavigationManager
+@using YmcaApiClient
+@inject YmcaApiClientService ApiClientService
+@using Microsoft.Extensions.Logging
+@inject ILogger<BulletinBoard> Logger
 
 <style>
     /* Partial-page background */
@@ -32,17 +33,16 @@
     <div class="text-center mb-4">
         <h2>Bulletin Board</h2>
     </div>
-
     <div class="border p-3 rounded" style="max-height: 30vh; min-height= 10vh; min-width= 70vh; overflow-y: auto;">
-        @if (messages.Any())
+        @if (bulletins.Any())
         {
             <ul class="list-unstyled">
-                @foreach (var message in messages)
+                @foreach (var bulletin in bulletins)
                 {
                     <li class="mb-3">
                         <div class="d-flex flex-column">
-                            <p class="mb-2">@message.Text</p>
-                            <small class="text-muted">@message.Timestamp.ToString("MMMM d, yyyy HH:mm:ss")</small>
+                            <p class="mb-2">@bulletin.Message</p>
+                            <small class="text-muted">@bulletin.Date.ToString("MMMM d, yyyy HH:mm:ss")</small>
                         </div>
                     </li>
                 }
@@ -53,36 +53,66 @@
             <p>No messages posted yet.</p>
         }
     </div>
-
     <div class="container my-3" style="max-height: 20vh; min-width= 40vh; overflow-y: auto;">
         <div class="mb-4">
             <textarea @bind="newMessage" class="form-control" rows="3" placeholder="Write your message here..."></textarea>
         </div>
+        <button class="btn btn-primary" style="background-color: #EC1F26; border-color: #EC1F26;" @onclick="PostBulletinMessage">Post Message</button>
+        @if (!string.IsNullOrEmpty(_errorMessage))
+        {
+            <div class="alert alert-danger mt-3">@_errorMessage</div>
+        }
     </div>
-    <button class="btn btn-primary mt-2" style="background-color: #EC1F26; border-color: #EC1F26;" @onclick="PostMessage">Post Message</button>
 </div>
 
 @code {
+    private List<Bulletin> bulletins = new();
     private string newMessage;
-    private List<Message> messages = new List<Message>();
+    private string _errorMessage;
 
-    private void PostMessage()
+    protected override async Task OnInitializedAsync()
     {
-        if (!string.IsNullOrWhiteSpace(newMessage))
-        {
-            messages.Add(new Message
-                {
-                    Text = newMessage,
-                    Timestamp = DateTime.Now
-                });
+        await LoadBulletins();
+    }
 
-            newMessage = string.Empty;
+    private async Task LoadBulletins()
+    {
+        try
+        {
+            var result = await ApiClientService.GetBulletins();
+            if (result != null)
+            {
+                bulletins = result;
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "An error occurred while loading bulletins");
+            _errorMessage = "An error occurred while loading bulletins.";
         }
     }
 
-    public class Message
+    private async Task PostBulletinMessage()
     {
-        public string Text { get; set; }
-        public DateTime Timestamp { get; set; }
+        if (!string.IsNullOrWhiteSpace(newMessage))
+        {
+            var newBulletin = new Bulletin
+            {
+                Message = newMessage,
+                Date = DateTime.Now
+            };
+
+            try
+            {
+                await ApiClientService.AddBulletin(newBulletin);
+                bulletins.Add(newBulletin);
+                newMessage = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "An error occurred while posting the bulletin message");
+                _errorMessage = "An error occurred while posting the bulletin message.";
+            }
+        }
     }
 }

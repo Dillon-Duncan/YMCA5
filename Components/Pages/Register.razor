@@ -1,6 +1,10 @@
 ﻿@page "/register"
-
+@using Microsoft.Extensions.Logging
+@using YMCA3.Models
+@using YmcaApiClient
 @inject NavigationManager NavigationManager
+@inject YmcaApiClientService ApiClientService
+@inject ILogger<Register> Logger
 
 <style>
     /* Partial-page background */
@@ -34,29 +38,38 @@
     </div>
 
     <div class="w-100" style="max-width: 400px;">
-        <form>
+        <EditForm Model="_user" OnValidSubmit="SaveUser">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
             <div class="mb-3">
-                <input type="text" id="userFullname" class="form-control form-control-lg shadow" placeholder="Full name" />
+                <InputText id="userFullname" class="form-control form-control-lg shadow" placeholder="Full name" @bind-Value="_user.FullName" />
+                <ValidationMessage For="@(() => _user.FullName)" />
             </div>
 
             <div class="mb-3">
-                <input type="text" id="userEmail" class="form-control form-control-lg shadow" placeholder="Email" />
+                <InputText id="userEmail" class="form-control form-control-lg shadow" placeholder="Email" @bind-Value="_user.EmailAddress" />
+                <ValidationMessage For="@(() => _user.EmailAddress)" />
             </div>
 
             <div class="mb-3">
-                <input type="text" id="userPhoneNumber" class="form-control form-control-lg shadow" placeholder="Phone Number" />
+                <InputText id="userPhoneNumber" class="form-control form-control-lg shadow" placeholder="Phone Number" @bind-Value="_user.PhoneNumber" />
+                <ValidationMessage For="@(() => _user.PhoneNumber)" />
             </div>
 
             <div class="mb-3">
-                <input type="text" id="userCity" class="form-control form-control-lg shadow" placeholder="City" />
+                <InputText id="userCity" class="form-control form-control-lg shadow" placeholder="City" @bind-Value="_user.City" />
+                <ValidationMessage For="@(() => _user.City)" />
             </div>
 
             <div class="mb-3">
-                <input type="password" id="userConfirmPassword" class="form-control form-control-lg shadow" placeholder="Confirm Password" />
+                <InputText id="userPassword" type="password" class="form-control form-control-lg shadow" placeholder="Password" @bind-Value="_user.Password" />
+                <ValidationMessage For="@(() => _user.Password)" />
             </div>
 
             <div class="mb-3">
-                <input type="password" id="userPassword" class="form-control form-control-lg shadow" placeholder="Password" />
+                <InputText id="userConfirmPassword" type="password" class="form-control form-control-lg shadow" placeholder="Confirm Password" @bind-Value="_confirmPassword" />
+                <ValidationMessage For="@(() => _confirmPassword)" />
             </div>
 
             <div class="d-flex justify-content-center mb-4">
@@ -67,15 +80,46 @@
             </div>
 
             <div class="text-center">
-                <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block btn-lg shadow" style="background-color: #EC1F26; border-color: #EC1F26;" @onclick="NavigateToLogin">Register</button>
+                <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block btn-lg shadow" style="background-color: #EC1F26; border-color: #EC1F26;">Register</button>
             </div>
-        </form>
+        </EditForm>
+        @if (!string.IsNullOrEmpty(_errorMessage))
+        {
+            <div class="alert alert-danger mt-3">@_errorMessage</div>
+        }
     </div>
 </div>
 
 @code {
-    private void NavigateToLogin()
+    private YmcaApiClient.User _user = new YmcaApiClient.User();
+    private string _confirmPassword;
+    private string _errorMessage;
+
+    private async Task SaveUser()
     {
-        NavigationManager.NavigateTo("/login");
+        if (_user.Password != _confirmPassword)
+        {
+            _errorMessage = "Passwords do not match.";
+            return;
+        }
+
+        try
+        {
+            var response = await ApiClientService.AddUser(_user);
+            if (response.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/dashboard");
+            }
+            else
+            {
+                _errorMessage = "Registration failed. Please try again.";
+                Logger.LogError("Registration failed with status code: {StatusCode}", response.StatusCode);
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"An error occurred: {ex.Message}";
+            Logger.LogError(ex, "An error occurred during registration");
+        }
     }
 }
