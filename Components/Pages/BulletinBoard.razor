@@ -54,16 +54,6 @@
             <p>No messages posted yet.</p>
         }
     </div>
-    <div class="container my-3" style="max-height: 20vh; min-width= 40vh; overflow-y: auto;">
-        <div class="mb-4">
-            <textarea @bind="newMessage" class="form-control" rows="3" placeholder="Write your message here..."></textarea>
-        </div>
-        <button class="btn btn-primary" style="background-color: #EC1F26; border-color: #EC1F26;" @onclick="PostBulletinMessage">Post Message</button>
-        @if (!string.IsNullOrEmpty(_errorMessage))
-        {
-            <div class="alert alert-danger mt-3">@_errorMessage</div>
-        }
-    </div>
 </div>
 
 @code {
