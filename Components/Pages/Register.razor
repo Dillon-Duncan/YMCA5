@@ -1,7 +1,7 @@
 ﻿@page "/register"
 @using Microsoft.Extensions.Logging
-@using YMCA3.Models
-@using YmcaApiClient
+@using YMCA3.YmcaApiClient
+@using YMCA3.YmcaApiClient.Models.ApiModels
 @inject NavigationManager NavigationManager
 @inject YmcaApiClientService ApiClientService
 @inject ILogger<Register> Logger
@@ -91,7 +91,7 @@
 </div>
 
 @code {
-    private YmcaApiClient.User _user = new YmcaApiClient.User();
+    private YmcaApiClient.Models.ApiModels.User _user = new YmcaApiClient.Models.ApiModels.User();
     private string _confirmPassword;
     private string _errorMessage;
 

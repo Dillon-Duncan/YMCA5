@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace YmcaApiClient
+namespace YMCA3.YmcaApiClient.Models.ApiModels
 {
     public class Event
     {

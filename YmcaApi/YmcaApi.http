@@ -1,6 +1,0 @@
-@YmcaApi_HostAddress = http://localhost:5013
-
-GET {{YmcaApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

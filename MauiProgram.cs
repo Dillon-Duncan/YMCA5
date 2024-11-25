@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using YMCA3.Components.Pages;
-using YmcaApiClient.IoC;
+using YMCA3.YmcaApiClient.IoC;
 
 namespace YMCA3
 {
@@ -16,7 +16,8 @@ namespace YMCA3
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 });
 
-            builder.Services.AddYmcaApiClientService(x => x.ApiBaseAddress = "http://localhost:5013");
+            builder.Services.AddSingleton<YmcaApiClient.YmcaApiClientService>();
+            builder.Services.AddYmcaApiClientService(x => x.ApiBaseAddress = "https://ymcaapimanagement.azure-api.net");
             builder.Services.AddTransient<Admin>();
             builder.Services.AddTransient<BulletinBoard>();
             builder.Services.AddTransient<Calendar>();

@@ -2,9 +2,10 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using YmcaApiClient.Models;
+using YMCA3.YmcaApiClient.Models;
+using YMCA3.YmcaApiClient.Models.ApiModels;
 
-namespace YmcaApiClient
+namespace YMCA3.YmcaApiClient
 {
     public class YmcaApiClientService
     {
@@ -13,7 +14,7 @@ namespace YmcaApiClient
         public YmcaApiClientService(ApiClientOptions apiClientOptions)
         {
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new System.Uri(apiClientOptions.ApiBaseAddress);
+            _httpClient.BaseAddress = new Uri(apiClientOptions.ApiBaseAddress);
         }
 
         // User methods
@@ -149,7 +150,7 @@ namespace YmcaApiClient
         // Message methods
         public async Task<List<Message>?> GetMessages()
         {
-            return await _httpClient.GetFromJsonAsync<List<Message>>("/api/Message");
+            return await _httpClient.GetFromJsonAsync<List<Models.ApiModels.Message>>("/api/Message");
         }
 
         public async Task<Message?> GetMessageById(int id)

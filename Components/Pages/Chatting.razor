@@ -62,7 +62,7 @@
     public int ChatId { get; set; }
 
     private string newMessage = string.Empty;
-    private List<YmcaApiClient.Message> chatMessages = new();
+    private List<YmcaApiClient.Models.ApiModels.Message> chatMessages = new();
     private string _errorMessage;
 
     protected override async Task OnInitializedAsync()
@@ -91,7 +91,7 @@
     {
         if (!string.IsNullOrWhiteSpace(newMessage))
         {
-            var newChatMessage = new YmcaApiClient.Message
+            var newChatMessage = new YmcaApiClient.Models.ApiModels.Message
 			{
 				Text = newMessage
 			};

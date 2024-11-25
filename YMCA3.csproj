@@ -70,8 +70,4 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="C:\Users\mrdun\source\repos\LargerYMCA\YmcaApiClient\YmcaApiClient.csproj" />
-    </ItemGroup>
-
 </Project>

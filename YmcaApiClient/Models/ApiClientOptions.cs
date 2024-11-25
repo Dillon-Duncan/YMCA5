@@ -1,4 +1,4 @@
-﻿namespace YmcaApiClient.Models
+﻿namespace YMCA3.YmcaApiClient.Models
 {
     public class ApiClientOptions
     {

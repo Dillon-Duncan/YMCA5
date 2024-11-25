@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
-using YmcaApiClient.Models;
+using YMCA3.YmcaApiClient.Models;
 
-namespace YmcaApiClient.IoC
+namespace YMCA3.YmcaApiClient.IoC
 {
     public static class ServiceCollectionExtension
     {

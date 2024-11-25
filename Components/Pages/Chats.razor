@@ -1,5 +1,6 @@
 ﻿@page "/chats"
-@using YmcaApiClient
+@using YMCA3.YmcaApiClient
+@using YMCA3.YmcaApiClient.Models.ApiModels
 @inject YmcaApiClientService ApiClientService
 @using Microsoft.Extensions.Logging
 @inject ILogger<Chats> Logger
@@ -48,7 +49,7 @@
 </div>
 
 @code {
-    private List<YmcaApiClient.Chat> userChats = new();
+    private List<YmcaApiClient.Models.ApiModels.Chat> userChats = new();
     private string _errorMessage;
 
     protected override async Task OnInitializedAsync()
