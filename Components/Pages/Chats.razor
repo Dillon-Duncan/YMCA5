@@ -4,6 +4,7 @@
 @inject YmcaApiClientService ApiClientService
 @using Microsoft.Extensions.Logging
 @inject ILogger<Chats> Logger
+@inject NavigationManager NavigationManager
 
 <div class="content px-4 d-flex flex-column justify-content-center align-items-center" style="height: 100vh; margin-bottom: 25px;">
     <div class="text-center mb-4">
@@ -13,7 +14,7 @@
         <ul class="list-group">
             @foreach (var chat in userChats)
             {
-                <li class="list-group-item d-flex justify-content-between align-items-center" @onclick="() => NavigateToChat(chat.Id)">
+                <li class="list-group-item d-flex justify-content-between align-items-center" style="margin-top: 5px;" @onclick="() => NavigateToChat()">
                     <div>
                         <h5 class="text-center mb-1">@chat.User2</h5>
                     </div>
@@ -49,8 +50,8 @@
         }
     }
 
-    private void NavigateToChat(int chatId)
+    private void NavigateToChat()
     {
-       // NavigationManager.NavigateTo($"/chatting/{chatId}");
+        NavigationManager.NavigateTo("/chatting");
     }
 }

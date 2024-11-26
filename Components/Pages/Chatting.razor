@@ -1,25 +1,33 @@
-﻿@page "/chatting/{chatId:int}"
+﻿@page "/chatting"
+@using YMCA3.Models
 @using YmcaApiClient
+@using YMCA3.YmcaApiClient.Models.ApiModels
 @inject YmcaApiClientService ApiClientService
 @using Microsoft.Extensions.Logging
 @inject ILogger<Chatting> Logger
 @inject NavigationManager NavigationManager
+@inject UserStateService UserStateService
 
-<div class="content px-4 d-flex flex-column justify-content-center align-items-center" style="height: 100vh; margin-bottom: 25px;">
+<div class="content px-4 d-flex flex-column justify-content-center align-items-center" style="height: 80vh; margin-bottom: 25px;">
     <div class="text-center mb-4">
-        <h2>Chatting</h2>
+        <h2>Chat</h2>
     </div>
-    <div class="chat-content border p-3 rounded mb-3" style="flex-grow: 1; overflow-y: auto;">
-        @foreach (var chatMessage in chatMessages)
+    <div class="chat-content border p-3 rounded mb-3" style="min-width: 400px; flex-grow: 1; overflow-y: auto;">
+        @if (chatMessages.Any())
         {
-            <div class="d-flex mb-2">
-                {
-                    <div class="ms-auto sent-message p-2 rounded bg-primary text-white" style="max-width: 70%;">
+            @foreach (var chatMessage in chatMessages)
+            {
+                <div class="d-flex mb-2 @(chatMessage.FromUser == LoggedInUser.Username ? "justify-content-end" : "justify-content-start")">
+                    <div class="p-2 rounded @(chatMessage.FromUser == LoggedInUser.Username ? "bg-primary text-white" : "bg-light text-dark")" style="max-width: 70%;">
                         <p class="mb-1">@chatMessage.Text</p>
-                        <small class="text-light">@chatMessage..ToString("HH:mm")</small>
+                        <small class="text-muted">@chatMessage.Date.ToString("HH:mm")</small>
                     </div>
-                }
-            </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No messages to display.</p>
         }
     </div>
     <div class="chat-input d-flex">
@@ -33,15 +41,19 @@
 </div>
 
 @code {
-    [Parameter]
-    public int ChatId { get; set; }
-
-    private string newMessage = string.Empty;
-    private List<YmcaApiClient.Models.ApiModels.Message> chatMessages = new();
-    private string _errorMessage;
+    private string newMessage = string.Empty; // Holds the message text being composed.
+    private List<Message> chatMessages = new(); // List of messages related to the logged-in user.
+    private string _errorMessage; // Stores error messages to display in the UI.
+    private LoggedUser LoggedInUser => UserStateService.LoggedUser; // Reference to the globally logged-in user.
 
     protected override async Task OnInitializedAsync()
     {
+        if (LoggedInUser == null)
+        {
+            NavigationManager.NavigateTo("/login"); // Redirect if the user isn't logged in.
+            return;
+        }
+
         await LoadChatMessages();
     }
 
@@ -49,16 +61,20 @@
     {
         try
         {
-            var chat = await ApiClientService.GetChatById(ChatId);
-            if (chat != null)
+            var messages = await ApiClientService.GetMessages();
+            if (messages != null)
             {
-            //    chatMessages = chat.Messages;
+                // Filter messages where the logged-in user is either the sender or the recipient
+                chatMessages = messages
+                    .Where(m => m.FromUser == LoggedInUser.Username || m.ToUser == LoggedInUser.Username)
+                    .OrderBy(m => m.Date)
+                    .ToList();
             }
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "An error occurred while loading chat messages");
-            _errorMessage = "An error occurred while loading chat messages.";
+            Logger.LogError(ex, "An error occurred while loading chat messages.");
+            _errorMessage = "An error occurred while loading messages.";
         }
     }
 
@@ -66,18 +82,23 @@
     {
         if (!string.IsNullOrWhiteSpace(newMessage))
         {
-            var newChatMessage = new YmcaApiClient.Models.ApiModels.Message
-			{
-				Text = newMessage
-			};
+            var newChatMessage = new Message
+                {
+                    FromUser = LoggedInUser.Username, // Sender is the logged-in user.
+                    ToUser = "janedoe", 
+                    Text = newMessage,
+                    Date = DateTime.Now
+                };
 
             try
             {
-                newMessage = string.Empty;
+                await ApiClientService.AddMessage(newChatMessage); // Sends the message to the server.
+                chatMessages.Add(newChatMessage); // Adds the message locally for immediate display.
+                newMessage = string.Empty; // Clears the input field.
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "An error occurred while sending the message");
+                Logger.LogError(ex, "An error occurred while sending the message.");
                 _errorMessage = "An error occurred while sending the message.";
             }
         }

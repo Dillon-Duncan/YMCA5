@@ -5,10 +5,9 @@
 @inject NavigationManager NavigationManager
 @inject YmcaApiClientService ApiClientService
 @inject ILogger<Login> Logger
-
+@inject UserStateService UserStateService
 
 <div class="content px-4 d-flex flex-column justify-content-center align-items-center" style="height: 100vh; margin-bottom: 25px;">
-
     <div class="text-center mb-4">
         <h2>Login</h2>
     </div>
@@ -41,11 +40,7 @@
             <div class="alert alert-danger mt-3">@_errorMessage</div>
         }
     </div>
-
 </div>
-
-
-
 
 @code {
     private string? _email;
@@ -64,6 +59,12 @@
 
             if (user != null)
             {
+                UserStateService.LoggedUser = new LoggedUser
+                    {
+                        EmailAddress = user.EmailAddress,
+                        Username = user.Username,
+                        Password = user.Password
+                    };
                 NavigationManager.NavigateTo("/dashboard");
             }
             else if (admin != null)

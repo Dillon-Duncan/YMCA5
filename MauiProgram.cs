@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using YMCA3.Components.Pages;
+using YMCA3.Models;
 using YMCA3.YmcaApiClient.IoC;
 
 namespace YMCA3
@@ -28,6 +29,7 @@ namespace YMCA3
             builder.Services.AddTransient<Register>();
             builder.Services.AddTransient<UserAccount>();
             builder.Services.AddTransient<Volunteer>();
+            builder.Services.AddSingleton<UserStateService>();
 
             builder.Services.AddMauiBlazorWebView();
 

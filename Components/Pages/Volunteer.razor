@@ -1,4 +1,12 @@
 ﻿@page "/volunteer"
+@using Microsoft.Extensions.Logging
+@using YMCA3.Models
+@using YMCA3.YmcaApiClient.Models.ApiModels
+@using YmcaApiClient
+@inject YmcaApiClientService ApiClientService
+@inject ILogger<Volunteer> Logger
+@inject UserStateService UserStateService
+@inject NavigationManager NavigationManager
 
 <div class="content px-4 d-flex flex-column justify-content-center align-items-center" style="height: 100vh; margin-bottom: 25px;">
     <div class="text-center mb-4">
@@ -6,7 +14,7 @@
     </div>
 
     <div style="max-width: 600px; width: 100%;">
-        <form>
+        <form @onsubmit="SubmitVolunteerStatus">
             <div class="mb-4">
                 <h5>Confirm Your Contact Information</h5>
                 <div class="mb-3">
@@ -67,4 +75,56 @@
             </div>
         </form>
     </div>
+
+    @if (!string.IsNullOrEmpty(_successMessage))
+    {
+        <div class="alert alert-success mt-3">@_successMessage</div>
+    }
+
+    @if (!string.IsNullOrEmpty(_errorMessage))
+    {
+        <div class="alert alert-danger mt-3">@_errorMessage</div>
+    }
 </div>
+
+@code {
+    private string _successMessage;
+    private string _errorMessage;
+
+    private async Task SubmitVolunteerStatus()
+    {
+        try
+        {
+            var loggedInUsername = UserStateService.LoggedUser?.Username;
+
+            if (string.IsNullOrEmpty(loggedInUsername))
+            {
+                _errorMessage = "Unable to identify the logged-in user.";
+                return;
+            }
+
+            // Search for the user in the database
+            var users = await ApiClientService.GetUsers();
+            var userToUpdate = users?.FirstOrDefault(u => u.Username == loggedInUsername);
+
+            if (userToUpdate == null)
+            {
+                _errorMessage = "Logged-in user not found.";
+                return;
+            }
+
+            // Update the volunteer status
+            userToUpdate.Volunteer = true;
+            await ApiClientService.UpdateUser(userToUpdate);
+
+            _successMessage = "Thank you for volunteering! Your status has been updated.";
+            _errorMessage = string.Empty;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "An error occurred while updating the volunteer status.");
+            _errorMessage = "An error occurred while updating your volunteer status. Please try again.";
+            _successMessage = string.Empty;
+        }
+    }
+}

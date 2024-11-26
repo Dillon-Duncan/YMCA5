@@ -5,60 +5,74 @@
 @using Microsoft.Extensions.Logging
 @inject ILogger<Calendar> Logger
 
-<div class="content px-4 d-flex flex-column justify-content-center align-items-center" style="height: 100vh; margin-bottom: 25px;">
-
-    <div class="text-center mb-4">
-        <h2>Calendar</h2>
-    </div>
+<div class="content px-4 d-flex flex-column justify-content-center align-items-center" style="height: 80vh; margin-bottom: 25px;">
 
     <div class="d-flex justify-content-center align-items-center mb-3">
-        <button class="btn btn-outline-primary me-2" style="background-color: #EC1F26; border-color: #EC1F26;" @onclick="PreviousMonth">Previous</button>
-        <h4 class="mb-0">@currentMonth.ToString("MMMM yyyy")</h4>
-        <button class="btn btn-outline-primary ms-2" style="background-color: #EC1F26; border-color: #EC1F26;" @onclick="NextMonth">Next</button>
+        <button class="btn btn-outline-primary me-2" style="background-color: #EC1F26; border-color: #EC1F26; min-width: 40vw;" @onclick="PreviousTwoMonths">Previous</button>
+        <button class="btn btn-outline-primary ms-2" style="background-color: #EC1F26; border-color: #EC1F26; min-width: 40vw;" @onclick="NextTwoMonths">Next</button>
     </div>
 
-    <div class="d-flex justify-content-center mb-4">
-        <div class="table-responsive me-4" style="max-width: 80%;">
-            <table class="table table-bordered text-center">
-                <thead>
-                    <tr>
-                        @foreach (var day in Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>())
-                        {
-                            <th>@day</th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var week in GetWeeksInMonth())
-                    {
+    <div class="d-flex justify-content-center flex-column mb-4" style="max-width: 100%; max-height: 100%; overflow-x: auto; overflow-y: auto;">
+        <!-- Display two months: one on top of the other -->
+        @foreach (var monthOffset in new[] { 0, 1 })
+        {
+            var monthToDisplay = currentMonth.AddMonths(monthOffset);
+            <div class="table-responsive me-4 mb-4" style="overflow-x: auto; overflow-y: hidden;">
+                <h5 class="text-center" style="color: white;">@monthToDisplay.ToString("MMMM yyyy")</h5>
+                <table class="table table-bordered text-center">
+                    <thead>
                         <tr>
-                            @foreach (var day in week)
+                            @foreach (var day in Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>())
                             {
-                                <td class="align-middle">
-                                    @if (day != null)
-                                    {
-                                        <div class="day-number">@day.Value.Day</div>
-                                        <ul class="list-unstyled">
-                                            @foreach (var eventItem in GetEventsForDay(day.Value))
-                                            {
-                                                <li class="text-small text-primary">@eventItem.Title</li>
-                                            }
-                                        </ul>
-                                    }
-                                </td>
+                                <th style="font-size: 0.5rem; background-color: white; color: black;">@day.ToString().Substring(0, 3)</th> <!-- Show short names (Mon, Tue, Wed...) -->
                             }
                         </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        @foreach (var week in GetWeeksInMonth(monthToDisplay))
+                        {
+                            <tr>
+                                @foreach (var day in week)
+                                {
+                                    <td class="align-middle" style="vertical-align: top; background-color: white;">
+                                        @if (day != null)
+                                        {
+                                            @if (GetEventsForDay(day.Value).Any())
+                                            {
+                                                <!-- Days with events: Event title in red text or on a red background with white text -->
+                                                <!-- Display event titles -->
+                                                <ul class="list-unstyled" style="margin-bottom: 0;">
+                                                    @foreach (var eventItem in GetEventsForDay(day.Value).Take(2))
+                                                    {
+                                                        <li class="text-white" style="font-size: 0.3rem; background-color: #EC1F26; border-radius: 1px; padding: 2px; margin: 0.5px;">
+                                                            @eventItem.Title
+                                                        </li> <!-- Event titles in white on a red background -->
+                                                    }
+                                                </ul>
+                                                @if (GetEventsForDay(day.Value).Count() > 2)
+                                                {
+                                                    <small class="text-muted">+ more</small> <!-- Indicate more events -->
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <!-- Days without events: Black text and regular day number -->
+                                                <div class="day-number" style="font-size: 0.5rem; color: black;">@day.Value.Day</div>
+                                            }
+                                        }
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
     </div>
 </div>
 
 @code {
     private DateTime currentMonth = DateTime.Now;
-    private DateTime newEventDate;
-    private string newEventTitle;
     private List<Event> events = new();
     private string _errorMessage;
 
@@ -84,26 +98,26 @@
         }
     }
 
-    private void PreviousMonth()
+    private void PreviousTwoMonths()
     {
-        currentMonth = currentMonth.AddMonths(-1);
+        currentMonth = currentMonth.AddMonths(-2);
     }
 
-    private void NextMonth()
+    private void NextTwoMonths()
     {
-        currentMonth = currentMonth.AddMonths(1);
+        currentMonth = currentMonth.AddMonths(2);
     }
 
-    private List<DateTime?>[] GetWeeksInMonth()
+    private List<DateTime?>[] GetWeeksInMonth(DateTime month)
     {
         var weeks = new List<DateTime?>[6];
         for (int i = 0; i < 6; i++)
         {
-            weeks[i] = new List<DateTime?>();
+            weeks[i] = new List<DateTime?>(); // Initialize each week's list
         }
 
-        var firstDayOfMonth = new DateTime(currentMonth.Year, currentMonth.Month, 1);
-        var daysInMonth = DateTime.DaysInMonth(currentMonth.Year, currentMonth.Month);
+        var firstDayOfMonth = new DateTime(month.Year, month.Month, 1);
+        var daysInMonth = DateTime.DaysInMonth(month.Year, month.Month);
         var startDayOfWeek = (int)firstDayOfMonth.DayOfWeek;
 
         int currentDay = 1;
@@ -113,11 +127,11 @@
             {
                 if (i == 0 && j < startDayOfWeek || currentDay > daysInMonth)
                 {
-                    weeks[i].Add(null);
+                    weeks[i].Add(null); // Empty cells
                 }
                 else
                 {
-                    weeks[i].Add(new DateTime(currentMonth.Year, currentMonth.Month, currentDay));
+                    weeks[i].Add(new DateTime(month.Year, month.Month, currentDay));
                     currentDay++;
                 }
             }
@@ -129,30 +143,5 @@
     private IEnumerable<Event> GetEventsForDay(DateTime day)
     {
         return events.Where(e => e.Date.Date == day.Date);
-    }
-
-    private async Task AddEvent()
-    {
-        if (!string.IsNullOrWhiteSpace(newEventTitle) && newEventDate != default)
-        {
-            var newEvent = new Event
-            {
-                Date = newEventDate,
-                Title = newEventTitle
-            };
-
-            try
-            {
-                await ApiClientService.AddEvent(newEvent);
-                events.Add(newEvent);
-                newEventDate = default;
-                newEventTitle = string.Empty;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "An error occurred while adding the event");
-                _errorMessage = "An error occurred while adding the event.";
-            }
-        }
     }
 }
