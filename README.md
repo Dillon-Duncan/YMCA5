@@ -9,7 +9,7 @@ YMCA Connect is an application designed to strengthen communities by connecting 
 - **Volunteer Opportunities**: Discover ways to get involved and contribute to the community through volunteering.
 - **Bulletin Board**: Stay updated with the latest news, events, and announcements from the YMCA.
 - **Chat Functionality**: Communicate with other users and share experiences or ask questions.
-- **DEvents Calendar**: Keep up to date with events happening soon
+- **Events Calendar**: Keep up to date with events happening soon
 
 ## Technologies Used
 - **Frontend**: Built using Blazor for a responsive and interactive user interface.
