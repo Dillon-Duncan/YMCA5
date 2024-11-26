@@ -10,16 +10,16 @@
     <div class="text-center mb-4">
         <h2>Bulletin Board</h2>
     </div>
-    <div class="border p-3 rounded" style="max-height: 30vh; min-height= 10vh; min-width= 70vh; overflow-y: auto;">
+    <div class="border p-3 rounded" style="max-height: 70vh; min-height= 50vh; min-width= 70vh; max-width= 90vh; overflow-y: auto;">
         @if (bulletins.Any())
         {
             <ul class="list-unstyled">
-                @foreach (var bulletin in bulletins)
+                @foreach (var bulletin in bulletins.OrderByDescending(b => b.Date))
                 {
-                    <li class="mb-3">
+                    <li class="mb-3" style="@GetBulletinStyle(bulletin.Date)">
                         <div class="d-flex flex-column">
-                            <p class="mb-2">@bulletin.Message</p>
-                            <small class="text-muted">@bulletin.Date.ToString("MMMM d, yyyy HH:mm:ss")</small>
+                            <p class="mb-2" style="color: black;">@bulletin.Message</p>
+                            <small class="text-muted" style="color: #6c757d;">@bulletin.Date.ToString("MMMM d, yyyy HH:mm:ss")</small>
                         </div>
                     </li>
                 }
@@ -64,10 +64,10 @@
         if (!string.IsNullOrWhiteSpace(newMessage))
         {
             var newBulletin = new Bulletin
-            {
-                Message = newMessage,
-                Date = DateTime.Now
-            };
+                {
+                    Message = newMessage,
+                    Date = DateTime.Now
+                };
 
             try
             {
@@ -80,6 +80,28 @@
                 Logger.LogError(ex, "An error occurred while posting the bulletin message");
                 _errorMessage = "An error occurred while posting the bulletin message.";
             }
+        }
+    }
+
+    // Method to determine the background style based on the bulletin date
+    private string GetBulletinStyle(DateTime bulletinDate)
+    {
+        var timeDifference = DateTime.Now - bulletinDate;
+
+        if (timeDifference.TotalDays <= 2)
+        {
+            // Bulletin is within the last week
+            return "background-color: white; border: 1px solid rgba(255, 0, 0, 0.3); border-radius: 8px; padding: 10px;";
+        }
+        else if (timeDifference.TotalDays > 2 && timeDifference.TotalDays <= 30)
+        {
+            // Bulletin is older than a week but within the last 30 days
+            return "background-color: rgba(255, 0, 0, 0.1); border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 10px;";
+        }
+        else
+        {
+            // Bulletin is older than 30 days
+            return "background-color: #6c757d; color: white; border: 1px solid rgba(0, 0, 0, 0.2); border-radius: 8px; padding: 10px;";
         }
     }
 }

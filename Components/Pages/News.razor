@@ -4,33 +4,86 @@
 @inject YmcaApiClientService ApiClientService
 @inject ILogger<News> Logger
 
+<style>
+    .scrollable-container {
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+        /* Hide scrollbar for Chrome, Safari, and Opera */
+        .scrollable-container::-webkit-scrollbar {
+            display: none;
+        }
+
+    /* Hide scrollbar for IE, Edge, and Firefox */
+    .scrollable-container {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+    }
+
+    .news-image {
+        width: 100%; /* Ensure image fits container */
+        height: 200px; /* Fixed height for uniformity */
+        object-fit: cover; /* Crop and center image */
+        border-radius: 8px 8px 0 0; /* Rounded top corners */
+    }
+
+    .card {
+        border: 1px solid rgba(0, 0, 0, 0.1); /* Subtle border for each news card */
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 15px; /* Spacing between news items */
+    }
+
+    .card-body {
+        padding: 15px; /* Inner padding for the content */
+    }
+
+    .card-title {
+        font-size: 1.25rem; /* Slightly larger title font */
+        font-weight: bold;
+    }
+
+    .card-text {
+        margin-bottom: 10px;
+    }
+
+    .text-muted {
+        font-size: 0.875rem; /* Smaller font for metadata */
+    }
+</style>
+
 <div class="content px-4 d-flex flex-column justify-content-center align-items-center" style="height: 100vh; margin-bottom: 25px;">
     <div class="text-center mb-4">
         <h2>News</h2>
     </div>
-    <div class="container my-4">
-        <div class="list-group">
-            @if (newsItems != null && newsItems.Any())
-            {
+
+    <div class="container my-4 scrollable-container">
+        @if (newsItems != null && newsItems.Any())
+        {
+            <div class="row">
                 @foreach (var item in newsItems)
                 {
-                    <div class="list-group-item">
-                        <div class="d-flex align-items-center">
-                            <img src="@item.Image" alt="@item.Headline" class="news-image me-3" />
-                            <div class="news-content">
-                                <h5 class="mb-1">@item.Headline</h5>
-                                <p class="mb-1">@item.Description</p>
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <a href="https://www.saymca.org.za/latest-news" class="clickable-card">
+                                <img src="@item.Image" alt="@item.Headline" class="news-image" />
+                            </a>
+                            <div class="card-body text-center">
+                                <h5 class="card-title">@item.Headline</h5>
+                                <p class="card-text">@item.Description</p>
                                 <small class="text-muted">@item.Date.ToString("MMMM d, yyyy")</small>
                             </div>
                         </div>
                     </div>
                 }
-            }
-            else
-            {
-                <p>No news items available.</p>
-            }
-        </div>
+            </div>
+        }
+        else
+        {
+            <p>No news items available.</p>
+        }
+
         @if (!string.IsNullOrEmpty(_errorMessage))
         {
             <div class="alert alert-danger mt-3">@_errorMessage</div>
