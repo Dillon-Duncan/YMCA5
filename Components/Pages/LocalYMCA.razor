@@ -1,30 +1,5 @@
 ﻿@page "/localymca"
 
-<style>
-    /* Partial-page background */
-    .background {
-        position: fixed;
-        top: 0;
-        left: 240px; /* Adjust this value to start the background image to the right of the sidebar */
-        width: calc(100% - 200px); /* Reduce width to account for sidebar width */
-        height: 100%;
-        background-image: url('/blur-background.ico');
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-        z-index: -1; /* Place background behind the content */
-    }
-
-    /* Content area styling */
-    .content {
-        position: relative;
-        z-index: 1; /* Ensure content is on top of the background */
-    }
-</style>
-
-<!-- Background Image Div -->
-<div class="background"></div>
-
 <div class="content px-4 d-flex flex-column justify-content-center align-items-center" style="height: 100vh; margin-bottom: 25px;">
 
     <div class="text-center mb-4">
@@ -132,39 +107,6 @@
                     <div class="card-body text-center">
                         <h5 class="card-title">YMCA Cape Town</h5>
                         <a href="/ymca-cape-town" class="btn btn-primary" style="background-color: #EC1F26; border-color: #EC1F26;">Learn More</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Branch 10 -->
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <img src="https://images.squarespace-cdn.com/content/v1/64a3c4a339812235844b7905/1694130522435-QD1D52FTJ4RB7L9ZP85O/355763425_947208683140828_6988474599242338121_n.jpeg?format=1500w" class="card-img-top" alt="YMCA Bloemfontein" />
-                    <div class="card-body text-center">
-                        <h5 class="card-title">YMCA Bloemfontein</h5>
-                        <a href="/ymca-bloemfontein" class="btn btn-primary" style="background-color: #EC1F26; border-color: #EC1F26;">Learn More</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Branch 11 -->
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <img src="https://images.squarespace-cdn.com/content/v1/64a3c4a339812235844b7905/1694130425603-62B50AB0W7K1S6FV9E7L/364244850_1366423544889747_8358484355693731264_n.jpeg?format=1500w" class="card-img-top" alt="YMCA Germiston" />
-                    <div class="card-body text-center">
-                        <h5 class="card-title">YMCA Germiston</h5>
-                        <a href="/ymca-germiston" class="btn btn-primary" style="background-color: #EC1F26; border-color: #EC1F26;">Learn More</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Branch 12 -->
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <img src="https://images.squarespace-cdn.com/content/v1/64a3c4a339812235844b7905/1694130220700-9PHZMA7ZTR1M3Z0BN1K1/352373942_564661752694664_2974792757996090674_n.jpeg?format=1500w" class="card-img-top" alt="YMCA Randburg" />
-                    <div class="card-body text-center">
-                        <h5 class="card-title">YMCA Randburg</h5>
-                        <a href="/ymca-randburg" class="btn btn-primary" style="background-color: #EC1F26; border-color: #EC1F26;">Learn More</a>
                     </div>
                 </div>
             </div>

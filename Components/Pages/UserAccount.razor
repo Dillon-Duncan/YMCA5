@@ -1,31 +1,6 @@
 ﻿@page "/useraccount"
 @using YmcaApiClient
 
-<style>
-    /* Partial-page background */
-    .background {
-        position: fixed;
-        top: 0;
-        left: 240px; /* Adjust this value to start the background image to the right of the sidebar */
-        width: calc(100% - 200px); /* Reduce width to account for sidebar width */
-        height: 100%;
-        background-image: url('/blur-background.ico');
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-        z-index: -1; /* Place background behind the content */
-    }
-
-    /* Content area styling */
-    .content {
-        position: relative;
-        z-index: 1; /* Ensure content is on top of the background */
-    }
-</style>
-
-<!-- Background Image Div -->
-<div class="background"></div>
-
 <div class="content px-4 d-flex flex-column justify-content-center align-items-center" style="height: 100vh; margin-bottom: 25px;">
     <div class="text-center mb-4">
         <h3>User Account</h3>

@@ -10,28 +10,6 @@
         overflow-x: hidden; /* Prevent horizontal scroll */
     }
 
-    /* Partial-page background */
-    .background {
-        position: fixed;
-        top: 0;
-        left: 250px; /* Adjust this value to start the background image to the right of the sidebar */
-        width: calc(100vw - 250px); /* Use viewport width units to prevent overflow */
-        height: 100%;
-        background-image: url('/blur-background.ico');
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-        z-index: -1; /* Place background behind the content */
-    }
-
-    /* Content area styling */
-    .content {
-        position: relative;
-        z-index: 2; /* Ensure content is on top of the background */
-        overflow-x: hidden; /* Prevent content overflow */
-        margin-top: 65px; /* Add margin to lower the buttons */
-    }
-
     /* Top banner styling */
     .top-banner {
         position: fixed; /* Fixed positioning to align with the viewport */
@@ -47,11 +25,10 @@
     }
 </style>
 
-<!-- Background Image Div -->
-<div class="background"></div>
+<!-- Top banner image <div class="top-banner"></div> -->
 
-<!-- Top banner image -->
-<div class="top-banner"></div>
+
+
 
 <div class="content px-4 d-flex flex-column justify-content-center align-items-center" style="height: 100vh; margin-bottom: 25px;">
     <div class="w-100" style="max-width: 600px;">

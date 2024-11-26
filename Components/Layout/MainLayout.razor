@@ -1,12 +1,41 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page" style="background-color : white">
+<style>
+    /* Background styling for the main section */
+    .background {
+        position: absolute; /* Position relative to its parent (the main section) */
+        top: 0;
+        left: 0;
+        width: 100%; /* Fill the main section's width */
+        height: 100%; /* Fill the main section's height */
+        background-image: url('/blur-background.ico');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        z-index: -1; /* Place the background behind the content */
+    }
+
+    /* Content area styling */
+    .content {
+        position: relative;
+        z-index: 1; /* Ensure content is on top of the background */
+    }
+
+    /* Main section styling to ensure proper height and relative positioning */
+    main {
+        position: relative; /* Establish positioning context for the background */
+        overflow: hidden; /* Prevent overflow issues with the background */
+    }
+</style>
+
+<div class="page">
     <div class="sidebar">
         <NavMenu />
     </div>
 
-    <main style="background-color : white">
-        <div style="background-color : white">
+    <main>
+        <div class="background"></div> <!-- Background scoped to the main section -->
+        <div>
             <article class="content px-4 d-flex justify-content-center align-items-center" style="height: 90vh; margin-bottom: 20px;">
                 @Body
             </article>
