@@ -22,7 +22,7 @@ To get started with YMCA Connect, follow these steps:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/ymca-connect.git
+   git clone https://github.com/Dillon-Duncan/YMCA5.git
    ```
 
 2. **Navigate to the Project Directory**:
