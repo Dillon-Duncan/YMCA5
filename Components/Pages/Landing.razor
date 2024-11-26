@@ -20,41 +20,68 @@
         position: relative;
         z-index: 1; /* Ensure content is on top of the background */
     }
+
+    /* Logo styling */
+    .logo {
+        opacity: 0;
+        transition: opacity 2s ease-in-out;
+        max-width: 300px;
+    }
+
+        .logo.visible {
+            opacity: 1;
+        }
 </style>
 
 <!-- Background Image Div -->
 <div class="background"></div>
 
 <div class="landing-screen d-flex justify-content-center align-items-center" style="height: 100vh; margin-bottom: 25px;">
-    <h1>@displayText</h1>
+    <img src="YMCA_LOGO.ico" class="logo @logoClass" alt="YMCA Logo" />
 </div>
 
 @code {
-    private string displayText = string.Empty;
-    private readonly string fullText = "YMCA";
+    private string logoClass = string.Empty;
+
+
 
     [Inject]
+
     private NavigationManager NavigationManager { get; set; } = default!;
 
+
+
     protected override async Task OnInitializedAsync()
+
     {
-        for (int i = 0; i < fullText.Length; i++)
-        {
-            displayText = fullText.Substring(0, i + 1);
-            StateHasChanged();
-            await Task.Delay(500);
-        }
 
+        // Wait for the logo fade-in effect
 
-        displayText = fullText;
+        await Task.Delay(500);
+
+        logoClass = "visible";
+
         StateHasChanged();
-        await Task.Delay(250);
+
+
+
+        // Wait for the logo to stay visible before navigating
+
+        await Task.Delay(3000);
+
+
 
         NavigateToLoginPage();
+
     }
 
+
+
     private void NavigateToLoginPage()
+
     {
+
         NavigationManager.NavigateTo("/login");
+
     }
 }
